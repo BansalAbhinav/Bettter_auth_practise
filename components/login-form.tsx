@@ -1,0 +1,40 @@
+"use client";
+import React from 'react'
+import { Label } from './ui/label';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { toast } from 'sonner';
+
+export const LoginInForm = () => {
+    async function handleSubmit(evt: React.FormEvent<HTMLFormElement>){
+        evt.preventDefault();
+        const formData = new FormData(evt.target as HTMLFormElement);
+
+            const email = String(formData.get('email'))
+        if(!email) return toast.error("Please Enter Your email")
+
+            const password = String(formData.get('password'))
+        if(!password) return toast.error("Please Enter Your password")
+
+
+    console.log({name,email,password});
+    
+    
+        }
+  return ( 
+    <form  onSubmit={handleSubmit} 
+    className='max-w-sm w-full space-y-4'>
+     {/**Email */}   
+         <div className="space-y-2">
+            <Label htmlFor='email'>Email</Label>
+            <Input type='email' id="email" name = "email"/>
+        </div>
+{/**Password */}   
+         <div className="space-y-2">
+            <Label htmlFor='password'>Password</Label>
+            <Input type="password" id="password" name = "password"/>
+        </div>
+<Button type='submit' className='w-full'>Login</Button>
+    </form>
+  )
+}
