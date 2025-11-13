@@ -1,12 +1,15 @@
 "use client";
-import React from 'react'
+import React, { useState } from 'react'
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { signIn } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 export const LoginInForm = () => {
+     const [isPending, setisPending] = useState(false);
+        const router = useRouter();
     async function handleSubmit(evt: React.FormEvent<HTMLFormElement>){
         evt.preventDefault();
         const formData = new FormData(evt.target as HTMLFormElement);
@@ -24,12 +27,15 @@ export const LoginInForm = () => {
         email,
         password
     },{
-        onRequest:()=>{},
-        onResponse:()=>{},
+            onRequest:()=>{setisPending(true)},
+            onResponse:()=>{setisPending(false)},
         onError:(ctx)=>{
             toast.error(ctx.error.message)
         },
-        onSuccess:()=>{}
+        onSuccess:()=>{
+            toast.success("Login Successful. Good to have you back.")
+                router.push("/profile");
+            },
     })
         }
   return ( 
@@ -45,7 +51,7 @@ export const LoginInForm = () => {
             <Label htmlFor='password'>Password</Label>
             <Input type="password" id="password" name = "password"/>
         </div>
-<Button type='submit' className='w-full'>Login</Button>
+<Button type='submit' className='w-full' disabled={isPending}>Login</Button>
     </form>
   )
 }
