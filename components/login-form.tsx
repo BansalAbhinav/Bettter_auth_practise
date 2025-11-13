@@ -4,6 +4,7 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
+import { signIn } from '@/lib/auth-client';
 
 export const LoginInForm = () => {
     async function handleSubmit(evt: React.FormEvent<HTMLFormElement>){
@@ -19,7 +20,17 @@ export const LoginInForm = () => {
 
     console.log({name,email,password});
     
-    
+    await signIn.email({
+        email,
+        password
+    },{
+        onRequest:()=>{},
+        onResponse:()=>{},
+        onError:(ctx)=>{
+            toast.error(ctx.error.message)
+        },
+        onSuccess:()=>{}
+    })
         }
   return ( 
     <form  onSubmit={handleSubmit} 
