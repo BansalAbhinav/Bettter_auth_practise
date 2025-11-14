@@ -4,40 +4,55 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
-import { signIn } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { signInEmailAction } from '@/actions/sign-in-email.action';
 
 export const LoginInForm = () => {
      const [isPending, setisPending] = useState(false);
         const router = useRouter();
-    async function handleSubmit(evt: React.FormEvent<HTMLFormElement>){
-        evt.preventDefault();
-        const formData = new FormData(evt.target as HTMLFormElement);
+    // async function handleSubmit(evt: React.FormEvent<HTMLFormElement>){
+    //     evt.preventDefault();
+    //     const formData = new FormData(evt.target as HTMLFormElement);
 
-            const email = String(formData.get('email'))
-        if(!email) return toast.error("Please Enter Your email")
+    //         const email = String(formData.get('email'))
+    //     if(!email) return toast.error("Please Enter Your email")
 
-            const password = String(formData.get('password'))
-        if(!password) return toast.error("Please Enter Your password")
+    //         const password = String(formData.get('password'))
+    //     if(!password) return toast.error("Please Enter Your password")
 
 
-    console.log({name,email,password});
+    // console.log({name,email,password});
     
-    await signIn.email({
-        email,
-        password
-    },{
-            onRequest:()=>{setisPending(true)},
-            onResponse:()=>{setisPending(false)},
-        onError:(ctx)=>{
-            toast.error(ctx.error.message)
-        },
-        onSuccess:()=>{
-            toast.success("Login Successful. Good to have you back.")
-                router.push("/profile");
-            },
-    })
-        }
+    // await signIn.email({
+    //     email,
+    //     password
+    // },{
+    //         onRequest:()=>{setisPending(true)},
+    //         onResponse:()=>{setisPending(false)},
+    //     onError:(ctx)=>{
+    //         toast.error(ctx.error.message)
+    //     },
+    //     onSuccess:()=>{
+    //         toast.success("Login Successful. Good to have you back.")
+    //             router.push("/profile");
+    //         },
+    // })
+    //     }
+       async function handleSubmit(evt: React.FormEvent<HTMLFormElement>){
+            evt.preventDefault();
+    
+            setisPending(true);
+            const formData = new FormData(evt.target as HTMLFormElement);  
+            const {error} = await signInEmailAction(formData);      
+            if(error){
+                toast.error(error)
+                setisPending(false);
+            }else{
+                toast.success("Login Successful. bhaiji Good To Have You Back")
+                router.push("/profile")
+            }
+                     
+            }
   return ( 
     <form  onSubmit={handleSubmit} 
     className='max-w-sm w-full space-y-4'>

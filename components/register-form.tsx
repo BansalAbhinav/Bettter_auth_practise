@@ -4,45 +4,26 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
-import { signUp } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { signupEmailAction } from '@/actions/sign-up-email.action';
 
 export const RegisterForm = () => {
     const [isPending, setisPending] = useState(false);
     const router = useRouter();
     async function handleSubmit(evt: React.FormEvent<HTMLFormElement>){
         evt.preventDefault();
-        const formData = new FormData(evt.target as HTMLFormElement);
 
-        const name = String(formData.get('name'))
-        if(!name) return toast.error("Please Enter Your Name")
-            
-            const email = String(formData.get('email'))
-        if(!email) return toast.error("Please Enter Your email")
-
-            const password = String(formData.get('password'))
-        if(!password) return toast.error("Please Enter Your password")
-
-
-    console.log({name,email,password});
-    
-    await signUp.email(
-       { name,
-        email,
-        password},
-        {
-            onRequest:()=>{setisPending(true)},
-            onResponse:()=>{setisPending(false)},
-            onError:(ctx)=>{
-                toast.error(ctx.error.message);
-                
-            },
-            onSuccess:()=>{
-                toast.success("Registration Complete. You'r Good To Go.")
-                router.push("/auth/login")
-            },
+        setisPending(true);
+        const formData = new FormData(evt.target as HTMLFormElement);  
+        const {error} = await signupEmailAction(formData);      
+        if(error){
+            toast.error(error)
+            setisPending(false);
+        }else{
+            toast.success("Registration Complete. You'r Good To Go.")
+            router.push("/auth/login")
         }
-    )
+                 
         }
   return ( 
     <form  onSubmit={handleSubmit} 
